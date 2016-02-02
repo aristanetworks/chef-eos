@@ -11,11 +11,10 @@ provisioner:
 #   name: inspec
 
 platforms:
-  - name: ubuntu-14.04
-  - name: centos-7.1
+  - name: vEOS_4.15.3F
 
 suites:
-  - name: default
+  - name: veos
     run_list:
       - recipe[eos::default]
     attributes:
