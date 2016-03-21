@@ -48,12 +48,26 @@ end
 
 # Include the rbeapi rubygem and ensure it is installed for Chef's ruby
 cookbook_file "#{Chef::Config[:file_cache_path]}/rbeapi.gem" do
-  source 'rbeapi-0.5.0.gem'
+  source 'rbeapi-0.5.1.gem'
 end
 resources(:cookbook_file => "#{Chef::Config[:file_cache_path]}/rbeapi.gem").run_action(:create)
 
 chef_gem 'rbeapi' do
   source "#{Chef::Config[:file_cache_path]}/rbeapi.gem"
-  version '0.5.0'
+  version '0.5.1'
   compile_time false
+  action :upgrade
 end
+
+#ohai "reload" do
+#  plugin "ipaddress"
+#  action :nothing
+#end
+
+#template "#{node[:ohai][:plugin_path]}/ohai_lldp_neighbors.rb" do
+#  source "ohai/ohai_lldp_neighbors.rb"
+#  notifies :reload, "ohai[reload]"
+#end
+
+#include_recipe "ohai::default"
+
