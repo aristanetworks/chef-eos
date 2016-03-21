@@ -12,6 +12,9 @@ provisioner:
 
 platforms:
   - name: vEOS_4.15.3F
+    driver:
+      customize:
+        memory: 2048
 
 suites:
   - name: veos
