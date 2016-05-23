@@ -12,24 +12,6 @@ provisioner:
 
 platforms:
   - name: vEOS_4.15.3F
-    driver:
-      vm_hostname: false
-      customize:
-        memory: 2048
-        nic2: 'intnet", "--intnet2", "management'
-        nic3: 'intnet", "--intnet3", "net3'
-        nic4: 'intnet", "--intnet4", "net4'
-        nic5: 'intnet", "--intnet5", "net5'
-      network:
-        #- ["forwarded_port", {guest: 80, host: 8880}]
-        - ["forwarded_port", {guest: 443, host: 8444}]
-      provision: true
-      # MUST end in .rb
-      vagrantfiles:
-        - /Users/jere/Demos/chef/eos/Vagrantfile.rb
-      # erb should be type Module
-      #vagrantfile_erb: '/Users/jere/Demos/chef/eos/Vagrantfile.erb'
-
 
 suites:
   - name: veos
