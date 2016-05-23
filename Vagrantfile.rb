@@ -1,11 +1,15 @@
-Vagrant.configure("2") do |c|
+Vagrant.configure('2') do |c|
 
-  c.vm.provision "file", source: "/Users/jere/Demos/chef/chef-12.6.0-1.el6.i386.rpm", destination: "/mnt/flash/chef-12.6.0-1.el6.i386.rpm"
+  c.vm.provision 'file', source:
+      '/Users/jere/Demos/chef/chef-12.6.0-1.el6.i386.rpm",
+      destination: "/mnt/flash/chef-12.6.0-1.el6.i386.rpm'
 
-  c.vm.provision "shell", inline: <<-SHELL
+  c.vm.provision 'shell', inline: <<-SHELL
     FastCli -p 15 -c "configure
   !  hostname node_name
-    ip domain-name ztps-test.com
+    ip domain-name aristanetworks.com
+    ip name-server 10.0.2.3
+    ip route 0.0.0.0/0 10.0.2.2
     !ip host ztps.ztps-test.com 172.16.130.10
    interface Ethernet1
        !no switchport
@@ -25,5 +29,8 @@ Vagrant.configure("2") do |c|
     !copy installed-extensions boot-extensions
     sudo install -d -o serverspec -g eosadmin -m 0700 ~serverspec/.ssh/
     sudo install -o serverspec -g eosadmin -m 0600 ~root/.ssh/authorized_keys ~serverspec/.ssh/
+    sudo ln -s /opt/chef/bin/chef-client /bin/chef-client
+    sudo ln -s /opt/chef/bin/chef-solo /bin/chef-solo
+    sudo ln -s /opt/chef/bin/chef-apply /bin/chef-apply
   SHELL
 end
