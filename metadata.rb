@@ -11,3 +11,6 @@ description 'Configures Arista EOS devices'
 source_url 'https://gishub.com/aristanetworks/chef-eos'
 issues_url 'https://gishub.com/aristanetworks/chef-eos/issues'
 supports 'AristaEOS', '>= 4.15.5'
+depends 'ohai', '> 2.1.0'
+# Use custom_resources from 12.0 - 12.5 in addition to 12.5+
+#depends 'compat_resource'
