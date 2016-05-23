@@ -2,7 +2,7 @@
 # Cookbook Name:: eos
 # Recipe:: vlan
 #
-# Copyright (c) 2016 The Authors, All Rights Reserved.
+# Copyright (c) 2016 Arista Networks, All Rights Reserved.
 
 
 eos_vlan '5' do
