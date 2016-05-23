@@ -2,14 +2,16 @@
 #
 # Example:
 #   eos_vlan '1' do
-#     name 'default'
-#     action :create
+#     vlan_name 'default'
+#     enable true
+#     trunk_groups %w(mlag_ctl test)
 #   end
 
 property :vlan, Fixnum, name_property: true
 # property :vlan, Fixnum, required: true
 property :vlan_name, String
-property :switch_name, String, default: 'localhost'
+#property :switch_name, String, default: 'localhost'
+property :switch_name, String, desired_state: false
 property :enable, kind_of: [TrueClass, FalseClass], default: true
 property :trunk_groups, Array
 # property :trunk_groups, Array, default: []
@@ -21,6 +23,8 @@ default_action :create
 
 #require_relative '_eos_eapi'
 begin
+  # Include gems vendored into this cookbook in the LOAD_PATH
+  $:.unshift *Dir[::File.expand_path('../../files/default/vendor/gems/**/lib', __FILE__)]
   require 'rbeapi'
 rescue LoadError
   msg = 'Unable to load rbeapi rubygem'
@@ -37,7 +41,7 @@ end
 def switch
   return @switch if @switch
   Rbeapi::Client.load_config(ENV['RBEAPI_CONF']) if ENV['RBEAPI_CONF']
-  connection_name = ENV['RBEAPI_CONNECTION'] || switch_name
+  connection_name = ENV['RBEAPI_CONNECTION'] || switch_name || 'localhost'
   @switch = Rbeapi::Client.connect_to(connection_name)
 end
 
