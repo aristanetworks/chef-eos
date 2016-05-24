@@ -24,7 +24,9 @@ default_action :create
 #require_relative '_eos_eapi'
 begin
   # Include gems vendored into this cookbook in the LOAD_PATH
-  $:.unshift *Dir[::File.expand_path('../../files/default/vendor/gems/**/lib', __FILE__)]
+  $LOAD_PATH.unshift(*Dir[::File.expand_path(
+    '../../files/default/vendor/gems/**/lib', __FILE__)]
+  )
   require 'rbeapi'
 rescue LoadError
   msg = 'Unable to load rbeapi rubygem'
