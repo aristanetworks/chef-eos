@@ -123,4 +123,4 @@ For support, please open a GitHub issue.  This module is maintained by Arista [E
 
 # License
 
-All files in this package are covered by the included [license](../blob/EFT1/LICENSE) unless otherwise noted.
+All files in this package are covered by the included [license](LICENSE.md) unless otherwise noted.
