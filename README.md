@@ -7,14 +7,27 @@ The eos cookbook simplifies management of [Arista](https://www.arista.com/) EOS 
 
 # Requirements
 
-This cookbook is designed and tested with Chef 12 and EOS 4.15. Other versions may work but are not fully tested at this time.
+This cookbook is designed and tested with Chef 12 and EOS 4.15. Other versions
+are likely to work but are not fully tested at this time.
+
+  - Arista EOS 4.15 or greater
+  - Chef client 32-bit RPM for RedHat/CentOS
+  - Arista Ruby client for eAPI (rbeapi) rubygem and dependencies:
+    - rbeapi 0.6.0 or greater which requires:
+      - netaddr
+      - net_http_unix
+      - inifile
 
 # Installing
 
-Installing Chef on an Arista switch requires the following steps:
+Installing Chef on an Arista switch requires the steps below. While the
+manual steps are displayed, below, for reference, it is suggested to use a tool
+such as Arista’s CloudVision or ZTP Server to take advantage of the zero-touch
+provisioning capability of Arista devices to load a desired EOS version,
+additional packages, and a base config, automatically.
 
 - [Download the Chef client](https://downloads.chef.io/chef-client/redhat/) for RedHat/CentOS (32-bit)
-- Copy the rpm to the switch
+- Copy the rpm to the switch.
   ```
   Arista#copy http://my_server/path/chef-12.6.0-1.el6.i386.rpm extension:
   ```
@@ -28,6 +41,39 @@ Installing Chef on an Arista switch requires the following steps:
   ```
 - Ensure recipe[‘eos’] is in the default runlist for any EOS devices
 
+## Installing behind a firewall
+
+By default, the chef_gem resource will reach out to rubygems.org to find the necessary rubygems.  When installing on devices without access to the Internet, additional steps are required.  These, too, should be automated whenever possible.
+
+One solution is to download the rubygem binaries to the Chef server, then use a recipe to install those on devices.  Example:
+
+Download the rubygem binaries:
+```
+gem fetch inifile
+gem fetch netaddr
+gem fetch net_http_unix
+gem fetch rbeapi
+```
+
+Then, create a recipe to copy these files to nodes and install the packages:
+```
+cookbook_file “#{Chef::Config[:file_cache_path]}/rbeapi.gem” do
+  source ‘rbeapi-0.4.0.gem’
+end
+resources(:cookbook_file => “#{Chef::Config[:file_cache_path]}/rbeapi.gem”).run_action(:create)
+
+chef_gem ‘rbeapi’ do
+  source “#{Chef::Config[:file_cache_path]}/rbeapi.gem”
+  version ‘0.4.0’
+  compile_time false
+  action :upgrade
+end
+```
+
+NOTE: the chef_gem resource requires the `version` to be specified when installing from a local file.
+
+Finally, include that recipe in the EOS device’s default runlist. `recipe[eos::rbeapi_local]`
+
 # Using
 
 There are 2 general methods to use this cookbook to manage an Arista switch: eos_switchconfig, which manages the running-config from a template, and discrete resources such as eos_vlan. eos_switchconfig is the recommended method at this time.  However, eos_vlan was written to serve as an example for additional discrete resources to be managed, if desired.
@@ -37,7 +83,7 @@ There are 2 general methods to use this cookbook to manage an Arista switch: eos
 ```ruby
 eos_switchconfig 'running-config' do
   action :create
-  source 'veos_config.erb'
+  source 'eos_config.erb'
   variables({
     hostname: 'veos01',
     domainname: 'example.com',
@@ -119,7 +165,7 @@ Community contributions are welcome.  Please ensure all pull-requests include sp
 
 # Authors & Support
 
-For support, please open a GitHub issue.  This module is maintained by Arista [EOS+ Consulting Services](mailto://eosplus-dev@arista.com).Commercial support options are available upon request.
+For support, please open a GitHub issue.  This module is maintained by Arista [EOS+ Consulting Services](mailto://eosplus-dev@arista.com). Commercial support options are available upon request.
 
 # License
 
