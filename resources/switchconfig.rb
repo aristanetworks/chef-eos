@@ -46,7 +46,6 @@
 #
 #   rubocop:disable Lint/RescueException
 
-#property :config_file, String, name_property: true, default: 'running-config'
 property :config_file, String, name_property: true
 property :switch_name, String, desired_state: false
 property :content, String, required: false
@@ -87,7 +86,6 @@ end
 # @param cmds [Array<String>] The commands to run on the switch.
 # @param bu_filename [String] The backup filename.
 def run_commands(cmds)
-  cmds = cmds.reject(&:empty?)
   return unless cmds.length > 0
   switch.config(cmds)
 end
@@ -157,7 +155,8 @@ end
 
 action :create do
   # Get the current running config in a SwitchConfig object
-  org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', current_resource.content)
+  org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('',
+                                                   current_resource.content)
 
   # Get the new running config in a SwitchConfig object
   new_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', new_resource.content)
@@ -166,11 +165,10 @@ action :create do
   # If results are both empty then nothing needs to change,
   # run_commands won't do anything for this case.
   results = org_swc.compare(new_swc)
-  # Drop empty lines here to be idempotent.  TODO: move to rbeapi.
-  swc_equal = results[0].cmds.reject(&:empty?).empty? && \
-              results[0].children.reject(&:empty?).empty? && \
-              results[1].cmds.reject(&:empty?).empty? && \
-              results[1].children.reject(&:empty?).empty?
+  swc_equal = results[0].cmds.empty? && \
+              results[0].children.empty? && \
+              results[1].cmds.empty? && \
+              results[1].children.empty?
 
   if new_resource.force || !swc_equal
     converge_by "Updating running-config. Force: #{new_resource.force}" do
