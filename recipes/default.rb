@@ -21,8 +21,6 @@ execute 'Enable eAPI' do
     /usr/bin/FastCli -p 15 -c 'enable
     configure
     management api http-commands
-    no potocol https
-    protocol http
     protocol unix-socket
     no shutdown
     end'
