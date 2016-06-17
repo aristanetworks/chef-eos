@@ -23,4 +23,5 @@ end
 
 group :development do
   gem 'rake'
+  gem 'busser-bats'
 end
