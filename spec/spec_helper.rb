@@ -25,11 +25,6 @@ require 'rbeapi'
 require 'chefspec'
 require 'chefspec/berkshelf'
 
-# load all shared examples and shared contexts
-#Dir[File.expand_path('../support/**/*.rb', __FILE__)].each do |file|
-#  require(file)
-#end
-
 # load all library files for easy mocking
 libs = File.expand_path('../../libraries', __FILE__)
 $LOAD_PATH.unshift(libs) unless $LOAD_PATH.include?(libs)
