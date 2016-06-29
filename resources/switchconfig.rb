@@ -100,7 +100,6 @@ def process_config(current, desired, force)
   # If force flag set then just apply the new config to the switch,
   # otherwise get current running config and diff with new config.
   if force == true
-    #TODO: notice 'Force flag enabled, overwriting existing config'
     #TODO: Should this be 'config replace', when available?
     cmds = desired.global.gen_commands
   else
