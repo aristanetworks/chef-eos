@@ -4,7 +4,7 @@
 #
 # Copyright (c) 2016 Arista Networks, All Rights Reserved.
 
-directory "/persist/sys/chef" do
+directory '/persist/sys/chef' do
   recursive true
   owner 'root'
   group 'root'
