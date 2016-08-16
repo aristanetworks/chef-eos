@@ -13,8 +13,11 @@ describe 'eos::default' do
       runner.converge(described_recipe)
     end
 
-    it 'converges successfully with eAPI configured' do
+    before(:each) do
       stub_command("/usr/bin/FastCli -p 15 -c \"show running-config\" | grep unix-socket").and_return(true)
+    end
+
+    it 'converges successfully with eAPI configured' do
       expect { chef_run }.to_not raise_error
     end
 
@@ -29,12 +32,10 @@ describe 'eos::default' do
     end
 
     it 'does not reconfigure eAPI for unix-sockets when detected' do
-      stub_command("/usr/bin/FastCli -p 15 -c \"show running-config\" | grep unix-socket").and_return(true)
       expect(chef_run).to_not run_execute('Enable eAPI')
     end
 
     it 'ensures base chef files are persistent' do
-      stub_command("/usr/bin/FastCli -p 15 -c \"show running-config\" | grep unix-socket").and_return(true)
       expect(chef_run).to create_directory('/persist/sys/chef').with(
         owner: 'root',
         group: 'root',
@@ -43,6 +44,16 @@ describe 'eos::default' do
       expect(chef_run).to create_link('/etc/chef').with(
         to: '/persist/sys/chef'
       )
+    end
+
+    it 'installs rbeapi as a chef_gem' do
+      expect(chef_run).to install_chef_gem('rbeapi')
+    end
+
+    it 'installs ohai plugins' do
+      expect(chef_run).to create_ohai_plugin('eos')
+      expect(chef_run).to create_ohai_plugin('eos_hostname')
+      expect(chef_run).to create_ohai_plugin('eos_lldp_neighbors')
     end
   end
 end

@@ -28,14 +28,16 @@ execute 'Enable eAPI' do
   not_if '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
 end
 
-#ohai "reload" do
-#  plugin "ipaddress"
-#  action :nothing
-#end
+chef_gem 'rbeapi'
 
-#template "#{node[:ohai][:plugin_path]}/ohai_lldp_neighbors.rb" do
-#  source "ohai/ohai_lldp_neighbors.rb"
-#  notifies :reload, "ohai[reload]"
-#end
+ohai_plugin "eos" do
+  source_file 'ohai/eos.rb'
+end
 
-#include_recipe "ohai::default"
+ohai_plugin "eos_hostname" do
+  source_file 'ohai/eos_hostname.rb'
+end
+
+ohai_plugin "eos_lldp_neighbors" do
+  source_file 'ohai/eos_lldp_neighbors.rb'
+end
