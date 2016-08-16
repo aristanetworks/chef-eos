@@ -1,7 +1,9 @@
 ---
 driver:
   name: vagrant
-  vm_hostname: arista
+  vm_hostname: false
+  #vm_hostname: arista
+  provision: true
 
 provisioner:
   name: chef_zero
@@ -13,9 +15,16 @@ provisioner:
 
 platforms:
   - name: vEOS_4.15.3F
+    driver:
+      vagrantfiles:
+        - vagrantfiles/veos.rb
+  - name: vEOS-4.16.7M
+    driver:
+      vagrantfiles:
+        - vagrantfiles/veos.rb
 
 suites:
-  - name: veos
+  - name: default
     run_list:
       - recipe[eos::default]
     attributes:
