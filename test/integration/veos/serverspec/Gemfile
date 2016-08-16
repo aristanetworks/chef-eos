@@ -1,6 +1,0 @@
-source 'https://rubygems.org'
-#gem 'serverspec', '< 2.0'
-#gem 'specinfra', :git => 'https://github.com/jerearista/specinfra.git', :branch => 'arista-eos'
-#gem 'specinfra', :path => '/mnt/flash/specinfra'
-#gem 'specinfra', '2.53.1.jere', :path => '/mnt/flash/specinfra-2.53.1.jere.gem'
-gem 'specinfra', :path => '/mnt/flash/specinfra-2.53.1.jere'
