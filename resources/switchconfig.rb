@@ -44,7 +44,6 @@
 #     })
 #   end
 #
-#   rubocop:disable Lint/RescueException
 
 property :config_file, String, name_property: true
 property :switch_name, String, desired_state: false
@@ -70,7 +69,7 @@ end
 # Ruby Client for eAPI API modules used to configure EOS resources.
 #
 # @return [switch] An instance of Rbeapi::Client::switch used to send
-#   and receive eAPI messages
+#   and receive eAPI messages.
 def switch
   return @switch if @switch
   Rbeapi::Client.load_config(ENV['RBEAPI_CONF']) if ENV['RBEAPI_CONF']
@@ -79,46 +78,27 @@ def switch
 end
 
 ##
-# run_commands runs the array of commands on the switch.
-# If running the commands failed and a backup filename was
-# specified then restore the backup configuration.
+# Perform a block-by-clock diff of the current and desired configs.
+# This allows for user input in which blocks are not in the same order
+# as 'show running-config'.
 #
-# @param cmds [Array<String>] The commands to run on the switch.
-# @param bu_filename [String] The backup filename.
-def run_commands(cmds)
-  return unless cmds.length > 0
-  switch.config(cmds)
-end
+# @param [current] <String> The running-config from the switch.
+# @param [desired] <String> The proposed config from the user.
+# @return [Boolean] True|False whether configurations are effectively equal
+def configs_differ?(current, desired)
+  # Get the current running config in a SwitchConfig object
+  org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', current)
 
-##
-# process_config process the switch config resource and applies
-# the required changes to the switch.
-#
-def process_config(current, desired, force)
-  bu_filename = ''
+  # Get the new running config in a SwitchConfig object
+  new_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', desired)
 
-  # If force flag set then just apply the new config to the switch,
-  # otherwise get current running config and diff with new config.
-  if force == true
-    #TODO: Should this be 'config replace', when available?
-    cmds = desired.global.gen_commands
-  else
-    # Compare the existing and new config
-    # If results are both empty then nothing needs to change,
-    # run_commands won't do anything for this case.
-    results = current.compare(desired)
-
-    # Set the switch configuration commands that are in the existing
-    # configuration, but not in the new configuration, to their
-    # default value.
-    default_cmds = results[0].gen_commands(add_default: true)
-    run_commands(default_cmds, bu_filename)
-
-    # Generated the commands to add to the current switch configuration
-    cmds = results[1].gen_commands
-  end
-
-  run_commands(cmds, bu_filename)
+  # Compare the current and new configs
+  # If results are both empty then nothing needs to change,
+  results = org_swc.compare(new_swc)
+  !results[0].cmds.empty? || \
+    !results[0].children.empty? || \
+    !results[1].cmds.empty? || \
+    !results[1].children.empty?
 end
 
 load_current_value do |desired_resource|
@@ -153,27 +133,40 @@ load_current_value do |desired_resource|
 end
 
 action :create do
-  # Get the current running config in a SwitchConfig object
-  org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('',
-                                                   current_resource.content)
-
-  # Get the new running config in a SwitchConfig object
-  new_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', new_resource.content)
-
-  # Compare the current and new configs
-  # If results are both empty then nothing needs to change,
-  # run_commands won't do anything for this case.
-  results = org_swc.compare(new_swc)
-  swc_equal = results[0].cmds.empty? && \
-              results[0].children.empty? && \
-              results[1].cmds.empty? && \
-              results[1].children.empty?
-
-  if new_resource.force || !swc_equal
+  if new_resource.force || configs_differ?(current_resource.content,
+                                           new_resource.content)
     converge_by "Updating running-config. Force: #{new_resource.force}" do
-      process_config(org_swc,
-                     new_swc,
-                     new_resource.force)
+      eos_v = switch.enable(['show version'])[0][:result]['version']
+      # Introduced in 4.14.6M, Recommended for use in 4.15.0F
+      if Gem::Version.new(eos_v) > Gem::Version.new('4.15')
+        if new_resource.content
+          file '/mnt/flash/startup-config' do
+            #cookbook new_resource.cookbook
+            content new_resource.content
+          end
+        elsif new_resource.resource.eql?(:cookbook_file)
+          cookbook_file '/mnt/flash/startup-config' do
+            cookbook new_resource.cookbook
+            source new_resource.source_file
+          end
+        elsif new_resource.resource.eql?(:template)
+          template '/mnt/flash/startup-config' do
+            cookbook new_resource.cookbook
+            source new_resource.source_file
+            variables new_resource.variables
+          end
+        end
+
+        # We use this method instead of the built-in chef template resource
+        # To allow users to run this on-node or from a proxy-node.
+        #switch.enable(['configure replace startup-config.chef'])
+        execute 'replace running-config' do
+          command 'FastCli -p15 -c "configure replace startup-config"'
+        end
+
+      else
+        Chef::Log.fatal 'Config replace requires EOS version 4.15 or higher.'
+      end
     end
   end
 end
