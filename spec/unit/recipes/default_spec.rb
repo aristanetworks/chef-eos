@@ -14,7 +14,7 @@ describe 'eos::default' do
     end
 
     before(:each) do
-      stub_command("/usr/bin/FastCli -p 15 -c \"show running-config\" | grep unix-socket").and_return(true)
+      stub_command('/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket').and_return(true)
     end
 
     it 'converges successfully with eAPI configured' do
@@ -22,12 +22,12 @@ describe 'eos::default' do
     end
 
     it 'converges successfully with eAPI not configured' do
-      stub_command("/usr/bin/FastCli -p 15 -c \"show running-config\" | grep unix-socket").and_return(false)
+      stub_command('/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket').and_return(false)
       expect { chef_run }.to_not raise_error
     end
 
     it 'configures eAPI for unix-sockets when not detected' do
-      stub_command("/usr/bin/FastCli -p 15 -c \"show running-config\" | grep unix-socket").and_return(false)
+      stub_command('/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket').and_return(false)
       expect(chef_run).to run_execute('Enable eAPI')
     end
 

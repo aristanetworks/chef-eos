@@ -15,5 +15,5 @@ eos_vlan '6' do
   action :create
   vlan_name 'Test_VLAN_6'
   enable true
-  trunk_groups ['mlag_ctl', 'test']
+  trunk_groups %w(mlag_ctl test)
 end

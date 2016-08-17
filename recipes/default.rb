@@ -30,14 +30,14 @@ end
 
 chef_gem 'rbeapi'
 
-ohai_plugin "eos" do
+ohai_plugin 'eos' do
   source_file 'ohai/eos.rb'
 end
 
-ohai_plugin "eos_hostname" do
+ohai_plugin 'eos_hostname' do
   source_file 'ohai/eos_hostname.rb'
 end
 
-ohai_plugin "eos_lldp_neighbors" do
+ohai_plugin 'eos_lldp_neighbors' do
   source_file 'ohai/eos_lldp_neighbors.rb'
 end
