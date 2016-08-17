@@ -1,13 +1,13 @@
 # eos Cookbook for Arista EOS
 
-The eos cookbook simplifies management of [Arista](https://www.arista.com/) EOS network devices.  Arista EOS uses the standard CentOS 32-bit Chef client.  By including the eos::default recipe in your runlist performs the following actions needed on EOS:
-- Relocate /etc/chef to /petsist/sys/chef with a symlink back to /etci/chef 
+The eos cookbook simplifies management of [Arista](https://www.arista.com/) EOS network devices.  Arista EOS uses the standard CentOS 32-bit Chef client.  By including the eos::default recipe in your runlist, it will perform the following actions needed on EOS:
+- Relocate /etc/chef to /persist/sys/chef with a symlink back to /etc/chef
 - Enable eAPI (‘management api http-commands’) with unix-sockets as the transport in the running-config
 - Adds/enhances several ohai plugins
 
 # Requirements
 
-This cookbook is designed and tested with Chef 12 and EOS 4.15. Other versions
+This cookbook is designed and tested with Chef 12 and EOS 4.15 and 4.16. Other versions
 are likely to work but are not fully tested at this time.
 
   - Arista EOS 4.15 or greater
@@ -161,7 +161,7 @@ end
 
 # Contributing
 
-Community contributions are welcome.  Please ensure all pull-requests include spec tests.
+Community contributions are welcome.  Please ensure all pull-requests include spec tests. See [CONTRIBUTING](CONTRIBUTING.md) for more detail.
 
 # Authors & Support
 
