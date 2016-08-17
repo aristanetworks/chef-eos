@@ -1,23 +1,12 @@
-# eos Cookbook for Arista EOS
+# Contributing to the eos Cookbook
 
-The eos cookbook simplifies management of [Arista](https://www.arista.com/) EOS network devices.  Arista EOS uses the standard CentOS 32-bit Chef client.  By including the eos::default recipe in your runlist performs the following actions needed on EOS:
-- Relocate /etc/chef to /petsist/sys/chef with a symlink back to /etci/chef 
-- Enable eAPI (‘management api http-commands’) with unix-sockets as the transport in the running-config
-- Adds/enhances several ohai plugins
+Community contributions to this cookbook are welcome.   Please ensure all Pull Requests include appropriate tests.
 
-# Requirements
-
-This cookbook is designed and tested with Chef 12 and EOS 4.15. Other versions
-are likely to work but are not fully tested at this time.
-
-  - Arista EOS 4.15 or greater
-  - Chef client 32-bit RPM for RedHat/CentOS
-  - Arista Ruby client for eAPI (rbeapi) rubygem and dependencies:
-    - rbeapi 0.6.0 or greater which requires:
-      - netaddr
-      - net_http_unix
-      - inifile
-  - TestKitchen requires Vagrant and VirtualBox
+# Contents
+1. [Development environment](#development-environment)
+2. [Testing](#testing)
+3. [Authors & Support](#authors--support)
+4. [License](#license)
 
 # Development Environment
 
@@ -47,6 +36,7 @@ Verify your environment by running the unit and kitchen tests before making chan
 - `rake unit`
 
 ## System tests - TestKitchen
+  TestKitchen requires Vagrant and VirtualBox.
 
 - Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> vEOS-lab-<version>-virtualbox.box
 - Add the box to your local inventory
@@ -79,10 +69,6 @@ Verify your environment by running the unit and kitchen tests before making chan
   - `kitchen converge [4167M]`
   - `kitchen verify [4167M]`
   - `kitchen destroy [4167M]`
-
-# Contributing
-
-Community contributions are welcome.  Please ensure all pull-requests include spec tests.
 
 # Authors & Support
 
