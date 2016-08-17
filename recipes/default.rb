@@ -28,7 +28,9 @@ execute 'Enable eAPI' do
   not_if '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
 end
 
-chef_gem 'rbeapi'
+chef_gem 'rbeapi' do
+  compile_time true
+end
 
 ohai_plugin 'eos' do
   source_file 'ohai/eos.rb'
