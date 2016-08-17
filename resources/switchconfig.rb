@@ -84,7 +84,7 @@ end
 #
 # @param [current] <String> The running-config from the switch.
 # @param [desired] <String> The proposed config from the user.
-# @return [Boolean] True|False whether configurations are effectively equal
+# @return [Boolean] whether configurations differ
 def configs_differ?(current, desired)
   # Get the current running config in a SwitchConfig object
   org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', current)
@@ -157,9 +157,6 @@ action :create do
           end
         end
 
-        # We use this method instead of the built-in chef template resource
-        # To allow users to run this on-node or from a proxy-node.
-        #switch.enable(['configure replace startup-config.chef'])
         execute 'replace running-config' do
           command 'FastCli -p15 -c "configure replace startup-config"'
         end
