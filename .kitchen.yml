@@ -27,4 +27,6 @@ suites:
   - name: default
     run_list:
       - recipe[eos::default]
+      - recipe[eos_test::switchconfig_static]
+      #- recipe[eos_test::switchconfig_template]
     attributes:
