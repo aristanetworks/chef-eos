@@ -2,17 +2,36 @@
 # # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
+  # Ethernet1
   config.vm.network 'private_network', virtualbox__intnet: true,
                                        ip: '169.254.1.11', auto_config: false
+  # Ethernet2
   config.vm.network 'private_network', virtualbox__intnet: true,
                                        ip: '169.254.1.11', auto_config: false
-  #config.vm.network 'private_network', virtualbox__intnet: 's00l01', ip: '169.254.1.11', auto_config: false
-  #config.vm.network 'private_network', virtualbox__intnet: 's00l02', ip: '169.254.1.11', auto_config: false
+
   config.vm.provision 'shell', inline: <<-SHELL
     sleep 30
     FastCli -p 15 -c 'configure
     ip route 0.0.0.0/0 10.0.2.2
     end'
+    SHELL
+
+  # Temporary until the following get released:
+  # https://github.com/chef/mixlib-install/pull/127
+  # https://github.com/chef/omnitruck/pull/192
+  config.vm.provision 'file',
+                      source: 'chef-12.13.30-1.el6.i386.rpm',
+                      destination: '/mnt/flash/chef-12.13.30-1.el6.i386.rpm'
+  config.vm.provision 'shell', inline: <<-SHELL
+    FastCli -p 15 -c 'bash sudo rpm -Uvh /mnt/flash/chef-12.13.30-1.el6.i386.rpm'
+    SHELL
+
+  config.vm.provision 'shell', inline: <<-SHELL
+    sleep 30
+    FastCli -p 15 -c 'configure
+    ip route 0.0.0.0/0 10.0.2.2
+    end
+    bash sudo rpm -Uvh /mnt/flash/chef-12.13.30-1.el6.i386.rpm'
     SHELL
   config.vm.provider :virtualbox do |v|
     # Networking:
