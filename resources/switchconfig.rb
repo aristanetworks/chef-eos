@@ -84,6 +84,7 @@ property :force, kind_of: [TrueClass, FalseClass], default: false,
 
 default_action :create
 
+require 'pry'
 begin
   require 'rbeapi'
   require 'rbeapi/switchconfig'
@@ -114,6 +115,7 @@ end
 # @param [current] <String> The running-config from the switch.
 # @param [desired] <String> The proposed config from the user.
 # @return [Boolean] whether configurations differ
+# rubocop:disable AbcSize
 def configs_differ?(current, desired)
   # Get the current running config in a SwitchConfig object
   org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', current)
@@ -129,6 +131,7 @@ def configs_differ?(current, desired)
     !results[1].cmds.empty? || \
     !results[1].children.empty?
 end
+# rubocop:enable AbcSize
 
 load_current_value do |desired_resource|
   # Get the current values from the switch
@@ -140,10 +143,11 @@ load_current_value do |desired_resource|
     @template_context = Chef::Mixin::Template::TemplateContext.new({})
 
     # Get the file path to the template in the cookbook
-    templates = run_context.cookbook_collection['eos'].template_filenames
+    templates = run_context.cookbook_collection[desired_resource.cookbook_name]
+                           .template_filenames
     source_path = ''
     templates.each do |tpath|
-      source_path = tpath if tpath.end_with? desired_resource.source
+      source_path = tpath if tpath =~ /#{desired_resource.source}(.erb)?$/
     end
     if source_path.empty?
       Chef::Log.fatal "Unable to locate template: #{desired_resource.source}"
@@ -158,6 +162,18 @@ load_current_value do |desired_resource|
 
     # Render the template to a string
     desired_resource.content @template_context.render_template(source_path)
+  elsif desired_resource.file
+    # Get the file path in the cookbook
+    files = run_context.cookbook_collection[desired_resource.cookbook_name]
+                       .file_filenames
+    source_path = ''
+    files.each do |fpath|
+      source_path = fpath if fpath.end_with? desired_resource.source
+    end
+    if source_path.empty?
+      Chef::Log.fatal "Unable to locate file: #{desired_resource.source}"
+    end
+    desired_resource.content File.read(source_path)
   end
 end
 
@@ -187,7 +203,7 @@ action :create do
         end
 
         execute 'replace running-config' do
-          command 'FastCli -p15 -c "configure replace startup-config"'
+          command 'FastCli -p15 -c "configure replace flash:startup-config"'
         end
 
       else

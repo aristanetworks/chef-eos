@@ -10,13 +10,12 @@ eos_switchconfig 'running-config' do
               '0.0.0.0/0' => '10.0.2.2'
             },
             l3ports: [
-              Ethernet1: {
+              Loopback0: {
                 ip_addr: '172.16.130.181/24'
               }
             ],
-            l2ports: [
-              Ethernet2: {},
-              Ethernet3: {},
-              Ethernet4: {}
-            ])
+            l2ports: {
+              Ethernet1: {},
+              Ethernet2: {}
+            })
 end
