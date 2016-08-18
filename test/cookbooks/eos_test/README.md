@@ -1,4 +1,5 @@
 # eos_test
 
-TODO: Enter the cookbook description here.
+This cookbook is exclusively for testing the custom resources within the eos
+cookbook.
 
