@@ -1,0 +1,36 @@
+event-handler dhclient
+   trigger on-boot
+   action bash sudo /mnt/flash/initialize_ma1.sh
+!
+transceiver qsfp default-mode 4x10G
+!
+ip name-server vrf default 10.0.2.3
+!
+spanning-tree mode mstp
+!
+aaa authorization exec default local
+!
+aaa root secret 5 $1$kJoSHuJm$TFgwpIkLdAgGm/Ve4MaDu.
+!
+username admin privilege 15 role network-admin secret 5 $1$zadebI3e$j.TmSB.xnIblL3ekQG8vJ/
+username vagrant privilege 15 role network-admin secret 5 $1$x7IKkFIE$GI5r4DQcD1yEkAMiSfLi80
+!
+interface Ethernet1
+   description configured by Chef switchconfig_file
+!
+interface Ethernet2
+   description configured by Chef switchconfig_file
+!
+interface Management1
+   ip address 10.0.2.15/24
+!
+ip route 0.0.0.0/0 10.0.2.2
+!
+no ip routing
+!
+management api http-commands
+   protocol unix-socket
+   no shutdown
+!
+!
+end

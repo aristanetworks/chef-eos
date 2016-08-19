@@ -77,6 +77,7 @@
 property :config_file, String, name_property: true
 property :switch_name, String, desired_state: false
 property :content, String, required: false
+property :file_name, String, required: false
 property :source, String, required: false, desired_state: true
 property :variables, Hash, required: false, desired_state: true
 property :force, kind_of: [TrueClass, FalseClass], default: false,
@@ -162,18 +163,18 @@ load_current_value do |desired_resource|
 
     # Render the template to a string
     desired_resource.content @template_context.render_template(source_path)
-  elsif desired_resource.file
+  elsif desired_resource.file_name
     # Get the file path in the cookbook
     files = run_context.cookbook_collection[desired_resource.cookbook_name]
                        .file_filenames
     source_path = ''
     files.each do |fpath|
-      source_path = fpath if fpath.end_with? desired_resource.source
+      source_path = fpath if fpath.end_with? desired_resource.file_name
     end
     if source_path.empty?
       Chef::Log.fatal "Unable to locate file: #{desired_resource.source}"
     end
-    desired_resource.content File.read(source_path)
+    desired_resource.content IO.read(source_path)
   end
 end
 
