@@ -34,6 +34,10 @@ ip route 0.0.0.0/0 10.0.2.2
 !
 no ip routing
 !
+banner motd
+Configured by Chef switchconfig_content
+EOF
+!
 management api http-commands
    protocol unix-socket
    no shutdown
