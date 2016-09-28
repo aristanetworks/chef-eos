@@ -22,15 +22,63 @@ interface Ethernet2
    description configured by Chef switchconfig_file
 !
 interface Management1
+   !! This is
+   !! a multiline
+   !! comment.
    ip address 10.0.2.15/24
 !
 ip route 0.0.0.0/0 10.0.2.2
 !
 no ip routing
 !
+banner login
+this
+  is
+ a
+multiline banner
+EOF
+!
 management api http-commands
    protocol unix-socket
    no shutdown
+!
+management cim-provider
+   ssl certificate
+   -----BEGIN CERTIFICATE-----
+   MIICsjCCAhugAwIBAgIJAIvdE0FU+XIsMA0GCSqGSIb3DQEBCwUAMHIxCzAJBgNV
+   BAYTAlVTMQswCQYDVQQIDAJDQTEUMBIGA1UEBwwLU2FudGEgQ2xhcmExGDAWBgNV
+   BAoMD0FyaXN0YSBOZXR3b3JrczESMBAGA1UECwwJVGVzdCBjZXJ0MRIwEAYDVQQD
+   DAlUZXN0IGNlcnQwHhcNMTYwOTI3MTgyMzQ3WhcNMjYwOTI1MTgyMzQ3WjByMQsw
+   CQYDVQQGEwJVUzELMAkGA1UECAwCQ0ExFDASBgNVBAcMC1NhbnRhIENsYXJhMRgw
+   FgYDVQQKDA9BcmlzdGEgTmV0d29ya3MxEjAQBgNVBAsMCVRlc3QgY2VydDESMBAG
+   A1UEAwwJVGVzdCBjZXJ0MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+OY7i
+   G7yvfgsYP2rheWKzvyMTRkH0dUV5EgX1xQHkHWIFr8GbYpxSpwx30nNRayXlxoDf
+   n/1VGn9d8w0xYFWU8rKMLdjJJ0/lgMFLpFtRVtwTF2FIlCDtmEyomyvhwin7SVlh
+   7QlymvDZmP1j5gQWpluPovNVvdXuMgLMlqIP9wIDAQABo1AwTjAdBgNVHQ4EFgQU
+   lthX7ffXqBdzq62MkbiMnPzGC5wwHwYDVR0jBBgwFoAUlthX7ffXqBdzq62MkbiM
+   nPzGC5wwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOBgQAFyN85Z9NBxaxF
+   uxac9ft1E+wjMyulhgyeSZslC7b21tyB/UwlOCNBifIIu1e9lzI+LrN4CXn2V3D6
+   y+5l4MsMvPO76KQt5BJWrrk1J8ZbT66SJChqmsVN+amq7TaAkGSEuMGIZWMKtAMO
+   SEhQYHrXoZQ8rB8XQC9Z4MkFmc71UQ==
+   -----END CERTIFICATE-----
+   EOF
+   ssl key
+   -----BEGIN RSA PRIVATE KEY-----
+   MIICXAIBAAKBgQC+OY7iG7yvfgsYP2rheWKzvyMTRkH0dUV5EgX1xQHkHWIFr8Gb
+   YpxSpwx30nNRayXlxoDfn/1VGn9d8w0xYFWU8rKMLdjJJ0/lgMFLpFtRVtwTF2FI
+   lCDtmEyomyvhwin7SVlh7QlymvDZmP1j5gQWpluPovNVvdXuMgLMlqIP9wIDAQAB
+   AoGAcH0TDIzAeLq9jto5txoUDx0xfb1nVUtgCOdqlNqqcp4ZkClOAThAHvRgAB94
+   SCZno8hN/2/Z3FCuDv2iyJciI8ycOrhQfsb8o/wbv0bF/7jauNT56rDnzXdtKGx4
+   SSjT4Y7Ud52XuO5tMX5We2oPWrAzLxHx4qsXVsQiJFmidOECQQDem/QHm02NVVvz
+   xJdzKBLLmMlBndNH9bt20PoYR2irIpxPPTKAROE8B1AdDvDEQlBerJmMUyK4TLzP
+   pYZ6dPxnAkEA2sIRIJj580AltXELtoM3DDAgrXHQr+qoGvPif/R0U5oULVYbV+zJ
+   L+SM45tCrRw09ALbcnhnMwxmn0uFfFQV8QJBANrQqVsgyWZ31V8Ui1pitbbzhEC/
+   hoNhhNgSKwPajYRLDSLGoPF8w3liJtmpaflAxgeJ2ZUZ0zMeGypxJnMQs1kCQGa8
+   /AQ+NC1s9AjJxcF60JCVzdMHgAYOg9LctYR4j2VwGIfOR9s8ZqRqh0yh72eTtr7e
+   1KdnKriL22p2soNYjlECQFTaJg9fJfgvJVob2dPwXpc+JzCYrfv7+ZtipwU+g8sf
+   rqS+qgng/mLD+v3N5M7GgxiEnjVmtwtb+EM3qLFYRJw=
+   -----END RSA PRIVATE KEY-----
+   EOF
 !
 !
 end
