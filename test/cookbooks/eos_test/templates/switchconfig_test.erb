@@ -30,6 +30,10 @@ ip route <%= dest %> <%= gw %>
 !
 no ip routing
 !
+banner motd
+Configured by Chef switchconfig_template
+EOF
+!
 management api http-commands
    protocol unix-socket
    no shutdown

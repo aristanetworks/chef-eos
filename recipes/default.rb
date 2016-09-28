@@ -58,6 +58,20 @@ end
 
 chef_gem 'rbeapi' do
   compile_time true
+  version '>= 1.0'
+end
+
+# Must require rbeapi here after we install the chef_gem because the
+# require in the resources will have already failed.
+# According to chef_gem docs, this shouldn't be necessary.
+require 'rbeapi'
+require 'rbeapi/switchconfig'
+
+execute 'Ensure eAPI socket created' do
+  command 'test -S /var/run/command-api.sock'
+  retries 5
+  retry_delay 1
+  not_if 'test -S /var/run/command-api.sock'
 end
 
 ohai_plugin 'eos' do

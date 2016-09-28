@@ -20,18 +20,17 @@ Vagrant.configure(2) do |config|
   # https://github.com/chef/mixlib-install/pull/127
   # https://github.com/chef/omnitruck/pull/192
   config.vm.provision 'file',
-                      source: 'chef-12.13.30-1.el6.i386.rpm',
-                      destination: '/mnt/flash/chef-12.13.30-1.el6.i386.rpm'
+                      source: '../chef-12.13.37-1.el6.i386.rpm',
+                      destination: '/mnt/flash/chef-12.13.37-1.el6.i386.rpm'
   config.vm.provision 'shell', inline: <<-SHELL
-    FastCli -p 15 -c 'bash sudo rpm -Uvh /mnt/flash/chef-12.13.30-1.el6.i386.rpm'
+    sudo rpm -Uvh /mnt/flash/chef-12.13.37-1.el6.i386.rpm
     SHELL
 
   config.vm.provision 'shell', inline: <<-SHELL
     sleep 30
     FastCli -p 15 -c 'configure
     ip route 0.0.0.0/0 10.0.2.2
-    end
-    bash sudo rpm -Uvh /mnt/flash/chef-12.13.30-1.el6.i386.rpm'
+    end'
     SHELL
   config.vm.provider :virtualbox do |v|
     # Networking:
