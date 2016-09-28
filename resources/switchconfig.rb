@@ -146,7 +146,7 @@ load_current_value do |desired_resource|
 
     # Get the file path to the template in the cookbook
     templates = run_context.cookbook_collection[desired_resource.cookbook_name]
-                           .template_filenames
+                .template_filenames
     source_path = ''
     templates.each do |tpath|
       source_path = tpath if tpath =~ /#{desired_resource.source}(.erb)?$/
@@ -170,7 +170,7 @@ load_current_value do |desired_resource|
 
     # Get the file path in the cookbook
     files = run_context.cookbook_collection[desired_resource.cookbook_name]
-                       .file_filenames
+            .file_filenames
     source_path = ''
     files.each do |fpath|
       source_path = fpath if fpath.end_with? desired_resource.file_name
@@ -187,7 +187,6 @@ load_current_value do |desired_resource|
   else
     content current
   end
-
 end
 
 action :create do

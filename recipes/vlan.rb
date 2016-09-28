@@ -5,7 +5,6 @@
 # Copyright (c) 2016 Arista Networks, All Rights Reserved.
 
 eos_vlan '5' do
-  #action :create
   vlan_name 'Test_VLAN_5'
   enable true
   trunk_groups %w(mlag_ctl test)
