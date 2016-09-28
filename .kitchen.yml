@@ -22,6 +22,10 @@ platforms:
     driver:
       vagrantfiles:
         - vagrantfiles/veos.rb
+  - name: vEOS-4.17.1F
+    driver:
+      vagrantfiles:
+        - vagrantfiles/veos.rb
 
 suites:
   - name: default
