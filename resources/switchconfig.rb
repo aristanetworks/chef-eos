@@ -119,10 +119,10 @@ end
 # rubocop:disable AbcSize
 def configs_differ?(current, desired)
   # Get the current running config in a SwitchConfig object
-  org_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', current)
+  org_swc = Rbeapi::SwitchConfig::SwitchConfig.new(current)
 
   # Get the new running config in a SwitchConfig object
-  new_swc = Rbeapi::SwitchConfig::SwitchConfig.new('', desired)
+  new_swc = Rbeapi::SwitchConfig::SwitchConfig.new(desired)
 
   # Compare the current and new configs
   # If results are both empty then nothing needs to change,
@@ -136,9 +136,10 @@ end
 
 load_current_value do |desired_resource|
   # Get the current values from the switch
-  content switch.get_config(config: 'running-config', as_string: true)
+  current = switch.get_config(config: 'running-config', as_string: true)
 
   if desired_resource.source
+    source desired_resource.source
     # A template was passed to us
     require 'chef/mixin/template'
     @template_context = Chef::Mixin::Template::TemplateContext.new({})
@@ -156,6 +157,7 @@ load_current_value do |desired_resource|
 
     # Copy any variables in to the template context
     if desired_resource.variables
+      variables desired_resource.variables
       desired_resource.variables.each do |key, value|
         @template_context[key] = value
       end
@@ -164,6 +166,8 @@ load_current_value do |desired_resource|
     # Render the template to a string
     desired_resource.content @template_context.render_template(source_path)
   elsif desired_resource.file_name
+    file_name desired_resource.file_name
+
     # Get the file path in the cookbook
     files = run_context.cookbook_collection[desired_resource.cookbook_name]
                        .file_filenames
@@ -176,40 +180,44 @@ load_current_value do |desired_resource|
     end
     desired_resource.content IO.read(source_path)
   end
+
+  # Use the block-compare to determine if the configs are different
+  if !configs_differ?(current, desired_resource.content)
+    content desired_resource.content
+  else
+    content current
+  end
+
 end
 
 action :create do
-  if new_resource.force || configs_differ?(current_resource.content,
-                                           new_resource.content)
-    converge_by "Updating running-config. Force: #{new_resource.force}" do
-      eos_v = switch.enable(['show version'])[0][:result]['version']
-      # Introduced in 4.14.6M, Recommended for use in 4.15.0F
-      if Gem::Version.new(eos_v) > Gem::Version.new('4.15')
-        if new_resource.content
-          file '/mnt/flash/startup-config' do
-            #cookbook new_resource.cookbook
-            content new_resource.content
-          end
-        elsif new_resource.resource.eql?(:cookbook_file)
-          cookbook_file '/mnt/flash/startup-config' do
-            cookbook new_resource.cookbook
-            source new_resource.source_file
-          end
-        elsif new_resource.resource.eql?(:template)
-          template '/mnt/flash/startup-config' do
-            cookbook new_resource.cookbook
-            source new_resource.source_file
-            variables new_resource.variables
-          end
+  converge_if_changed do
+    eos_v = switch.enable(['show version'])[0][:result]['version']
+    # Introduced in 4.14.6M, Recommended for use in 4.15.0F
+    if Gem::Version.new(eos_v) > Gem::Version.new('4.15')
+      if new_resource.content
+        file '/mnt/flash/startup-config' do
+          content new_resource.content
         end
-
-        execute 'replace running-config' do
-          command 'FastCli -p15 -c "configure replace flash:startup-config"'
+      elsif new_resource.resource.eql?(:cookbook_file)
+        cookbook_file '/mnt/flash/startup-config' do
+          cookbook new_resource.cookbook
+          source new_resource.source_file
         end
-
-      else
-        Chef::Log.fatal 'Config replace requires EOS version 4.15 or higher.'
+      elsif new_resource.resource.eql?(:template)
+        template '/mnt/flash/startup-config' do
+          cookbook new_resource.cookbook
+          source new_resource.source_file
+          variables new_resource.variables
+        end
       end
+
+      execute 'replace running-config' do
+        command 'FastCli -p15 -c "configure replace flash:startup-config"'
+      end
+
+    else
+      Chef::Log.fatal 'Config replace requires EOS version 4.15 or higher.'
     end
   end
 end
