@@ -9,13 +9,15 @@ require 'spec_helper'
 describe 'eos::default' do
   context 'When all attributes are default, on an unspecified platform' do
     let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new
+      runner = ChefSpec::ServerRunner.new(platform: 'fedora', version: '18')
+      #runner = ChefSpec::ServerRunner.new(platform: 'eos', version: '4.17.1F')
       runner.converge(described_recipe)
     end
 
     before(:each) do
       cmd = '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
       stub_command(cmd).and_return(true)
+      stub_command("test -S /var/run/command-api.sock").and_return(true)
     end
 
     it 'converges successfully with eAPI configured' do
