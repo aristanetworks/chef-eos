@@ -33,17 +33,23 @@ additional packages, and a base config, automatically.
 - [Download the Chef client](https://downloads.chef.io/chef-client/redhat/)
   for RedHat/CentOS (32-bit)
 - Copy the rpm to the switch.
-  ```
-  Arista#copy http://my_server/path/chef-12.6.0-1.el6.i386.rpm extension:
-  ```
+
+    ```
+    Arista#copy http://my_server/path/chef-12.6.0-1.el6.i386.rpm extension:
+    ```
+
 - Install the RPM:
-  ```
-  Arista#extension chef-12.6.0-1.el6.i386.rpm
-  ```
+
+    ```
+    Arista#extension chef-12.6.0-1.el6.i386.rpm
+    ```
+
 - Configure EOS to install the chef-client after a reload
-  ```
-  Arista#copy installed-extensions boot-extensions
-  ```
+
+    ```
+    Arista#copy installed-extensions boot-extensions
+    ```
+
 - Ensure `recipe[‘eos’]` is in the default runlist for any EOS devices
 
 ## Installing behind a firewall
@@ -57,6 +63,7 @@ One solution is to download the rubygem binaries to the Chef server, then use a
 recipe to install those on devices.  Example:
 
 Download the rubygem binaries:
+
 ```
 gem fetch inifile
 gem fetch netaddr
@@ -65,6 +72,7 @@ gem fetch rbeapi
 ```
 
 Then, create a recipe to copy these files to nodes and install the packages:
+
 ```
 cookbook_file “#{Chef::Config[:file_cache_path]}/rbeapi.gem” do
   source ‘rbeapi-0.4.0.gem’

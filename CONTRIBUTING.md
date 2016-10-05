@@ -41,10 +41,13 @@ changes.
 
 - Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> vEOS-lab-<version>-virtualbox.box
 - Add the box to your local inventory
+
     ```
     vagrant box add --name vEOS-4.16.7M ~/Downloads/vEOS_4.16.7M_virtualbox.box
     ```
+
 - Add the vEOS version to .kitchen.yml
+
     ```
     platforms:
       - name: vEOS-4.16.7M
@@ -52,12 +55,15 @@ changes.
           vagrantfiles:
             - vagrantfiles/veos.rb
     ```
+
 - Verify TestKitchen config
+
     ```
     $ kitchen list
     Instance         Driver   Provisioner  Verifier  Transport  Last Action
     veos-vEOS-4167M  Vagrant  ChefZero     Busser    Ssh        <Not Created>
     ```
+
 - Until omnitruck install.sh gets updated to recognize Arista EOS, the vagrantfiles/veos.rb will download and install the latest chef-client to EOS.TestKitchen normally handles this using https://omnitruck.chef.io/install.sh.
   NOTE: This is a temporary workaround until the following 2 PRs get released:
     - https://github.com/chef/mixlib-install/pull/127
