@@ -1,5 +1,10 @@
 #!/usr/bin/env groovy
 
+/**
+ * Jenkinsfile for Chef cookbook for EOS
+ * from https://github.com/aristanetworks/chef-arista/edit/develop/Jenkinsfile
+ */
+
 node('vagrant') {
 
     currentBuild.result = "SUCCESS"
@@ -46,10 +51,12 @@ node('vagrant') {
 
         stage ('TestKitchen integration') {
 
-            sh """
-                eval "\$(chef shell-init bash)"
-                rake integration_latest
-            """
+            wrap([$class: 'AnsiColorSimpleBuildWrapper', colorMapName: "xterm"]) {
+                sh """
+                    eval "\$(chef shell-init bash)"
+                    rake integration_latest
+                """
+            }
         }
 
         stage ('Cleanup') {
@@ -59,7 +66,10 @@ node('vagrant') {
             step([$class: 'WarningsPublisher', 
                   canComputeNew: false,
                   canResolveRelativePaths: false,
-                  consoleParsers: [[parserName: 'Rubocop'], [parserName: 'Foodcritic']],
+                  consoleParsers: [
+                                   [parserName: 'Rubocop'],
+                                   [parserName: 'Foodcritic']
+                                  ],
                   defaultEncoding: '',
                   excludePattern: '',
                   healthy: '',
@@ -67,11 +77,12 @@ node('vagrant') {
                   unHealthy: ''
             ])
 
-            mail body: 'Chef-eos build successful',
-                        from: 'eosplus-dev+jenkins@arista',
-                        replyTo: 'eosplus-dev@arista',
-                        subject: 'Chef-eos build successful',
-                        to: 'jere@arista.com'
+           mail body: "${env.BUILD_URL} build successful.\n" +
+                      "Started by ${env.BUILD_CAUSE}",
+                from: 'eosplus-dev+jenkins@arista',
+                replyTo: 'eosplus-dev@arista',
+                subject: "Chef-eos ${env.JOB_NAME} (${env.BUILD_NUMBER}) build successful",
+                to: 'jere@arista.com'
 
         }
 
@@ -81,11 +92,12 @@ node('vagrant') {
 
         currentBuild.result = "FAILURE"
 
-            mail body: "Chef-eos cookbook build error is here: ${env.BUILD_URL}" ,
-            from: 'eosplus-dev+jenkins@arista.com',
-            replyTo: 'eosplus-dev+jenkins@arista.com',
-            subject: 'Chef-eos build failed',
-            to: 'jere@arista.com'
+            mail body: "${env.JOB_NAME} (${env.BUILD_NUMBER}) cookbook build error " +
+                       "is here: ${env.BUILD_URL}\nStarted by ${env.BUILD_CAUSE}" ,
+                 from: 'eosplus-dev+jenkins@arista.com',
+                 replyTo: 'eosplus-dev+jenkins@arista.com',
+                 subject: "Chef-eos ${env.JOB_NAME} (${env.BUILD_NUMBER}) build failed",
+                 to: 'jere@arista.com'
 
             throw err
     }
