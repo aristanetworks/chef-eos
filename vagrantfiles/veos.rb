@@ -32,7 +32,8 @@ Vagrant.configure(2) do |config|
   chef_meta = 'https://omnitruck.chef.io/stable/chef/metadata'\
               '?p=arista_eos&pv=6&m=x86_64'
   url = URI(chef_meta)
-  chef_url = Net::HTTP.get(url).split("\n")[2].split()[1]
+  chef_url = Net::HTTP.get(url).split("\n")[2].split[1]
+             .gsub(/x86_64/, 'i386')
   chef_rpm = URI(chef_url).path.split('/').last
   File.write("../#{chef_rpm}",
              Net::HTTP.get(URI.parse(chef_url)))
