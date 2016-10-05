@@ -17,7 +17,7 @@ versions are likely to work but are not fully tested at this time.
   - Arista EOS 4.15 or greater
   - Chef client 32-bit RPM for RedHat/CentOS/el
   - Arista Ruby client for eAPI (rbeapi) rubygem and dependencies:
-    - rbeapi 0.6.0 or greater which requires:
+    - rbeapi 1.0 or greater which requires:
       - netaddr
       - net_http_unix
       - inifile
@@ -75,13 +75,13 @@ Then, create a recipe to copy these files to nodes and install the packages:
 
 ```
 cookbook_file “#{Chef::Config[:file_cache_path]}/rbeapi.gem” do
-  source ‘rbeapi-0.4.0.gem’
+  source ‘rbeapi-1.0.gem’
 end
 resources(:cookbook_file => “#{Chef::Config[:file_cache_path]}/rbeapi.gem”).run_action(:create)
 
 chef_gem ‘rbeapi’ do
   source “#{Chef::Config[:file_cache_path]}/rbeapi.gem”
-  version ‘0.4.0’
+  version ‘1.0’
   compile_time false
   action :upgrade
 end
