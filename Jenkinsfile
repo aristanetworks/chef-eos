@@ -51,12 +51,12 @@ node('vagrant') {
 
         stage ('TestKitchen integration') {
 
-            wrap([$class: 'AnsiColorSimpleBuildWrapper', colorMapName: "xterm"]) {
+            // wrap([$class: 'AnsiColorSimpleBuildWrapper', colorMapName: "xterm"]) {
                 sh """
                     eval "\$(chef shell-init bash)"
                     rake integration_latest
                 """
-            }
+            // }
         }
 
         stage ('Cleanup') {
