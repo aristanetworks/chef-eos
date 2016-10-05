@@ -39,7 +39,7 @@ changes.
 ## System tests - TestKitchen
   TestKitchen requires Vagrant and VirtualBox.
 
-- Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> vEOS-lab-<version>-virtualbox.box
+- Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> `vEOS-lab-<version>-virtualbox.box`
 - Add the box to your local inventory
 
     ```
