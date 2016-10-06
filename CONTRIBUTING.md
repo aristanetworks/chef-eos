@@ -25,7 +25,8 @@ In a separate window, you can run Guard to analyze file changes on-write.
 
 # Testing
 
-Verify your environment by running the unit and kitchen tests before making changes.
+Verify your environment by running the unit and kitchen tests before making
+changes.
 
 ## Style checks
 
@@ -38,31 +39,35 @@ Verify your environment by running the unit and kitchen tests before making chan
 ## System tests - TestKitchen
   TestKitchen requires Vagrant and VirtualBox.
 
-- Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> vEOS-lab-<version>-virtualbox.box
+- Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> `vEOS-lab-<version>-virtualbox.box`
 - Add the box to your local inventory
-  ```
-  vagrant box add --name vEOS-4.16.7M ~/Downloads/vEOS_4.16.7M_virtualbox.box
-  ```
+
+    ```
+    vagrant box add --name vEOS-4.16.7M ~/Downloads/vEOS_4.16.7M_virtualbox.box
+    ```
+
 - Add the vEOS version to .kitchen.yml
-  ```
-  platforms:
-    - name: vEOS-4.16.7M
-      driver:
-        vagrantfiles:
-          - vagrantfiles/veos.rb
-  ```
+
+    ```
+    platforms:
+      - name: vEOS-4.16.7M
+        driver:
+          vagrantfiles:
+            - vagrantfiles/veos.rb
+    ```
+
 - Verify TestKitchen config
-  ```
-  $ kitchen list
-  Instance         Driver   Provisioner  Verifier  Transport  Last Action
-  veos-vEOS-4167M  Vagrant  ChefZero     Busser    Ssh        <Not Created>
-  ```
-- [Download the Chef client](https://downloads.chef.io/chef-client/redhat/) for RedHat/CentOS (i386)
-  wget --no-check-certificate -O chef-12.13.30-1.el6.i386.rpm https://packages.chef.io/stable/el/6/chef-12.13.30-1.el6.i386.rpm
+
+    ```
+    $ kitchen list
+    Instance         Driver   Provisioner  Verifier  Transport  Last Action
+    veos-vEOS-4167M  Vagrant  ChefZero     Busser    Ssh        <Not Created>
+    ```
+
+- Until omnitruck install.sh gets updated to recognize Arista EOS, the vagrantfiles/veos.rb will download and install the latest chef-client to EOS.TestKitchen normally handles this using https://omnitruck.chef.io/install.sh.
   NOTE: This is a temporary workaround until the following 2 PRs get released:
     - https://github.com/chef/mixlib-install/pull/127
     - https://github.com/chef/omnitruck/pull/192
-  - vagrantfiles/veos.rb will handle copying the rpm to the switch.
 - Run TestKitchen
   - `kitchen create [4167M]`
   - Optional for debugging: `kitchen login [4167M]`
@@ -72,8 +77,11 @@ Verify your environment by running the unit and kitchen tests before making chan
 
 # Authors & Support
 
-For support, please open a GitHub issue.  This module is maintained by Arista [EOS+ Consulting Services](mailto://eosplus-dev@arista.com). Commercial support options are available upon request.
+For support, please open a GitHub issue.  This module is maintained by Arista
+[EOS+ Consulting Services](mailto://eosplus-dev@arista.com). Commercial support
+options are available upon request.
 
 # License
 
-All files in this package are covered by the included [license](LICENSE) unless otherwise noted.
+All files in this package are covered by the included [license](LICENSE) unless
+otherwise noted.

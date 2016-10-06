@@ -24,10 +24,18 @@ RSpec::Core::RakeTask.new(:unit) do |t|
   t.pattern = './**/unit/**/*_spec.rb'
 end
 
-desc 'Run Test Kitchen'
+desc 'Run Test Kitchen - all combinations'
 task :integration do
   Kitchen.logger = Kitchen.default_file_logger
   Kitchen::Config.new.instances.each do |instance|
+    instance.test(:always)
+  end
+end
+
+desc 'Run Test Kitchen on latest vEOS'
+task :integration_latest do
+  Kitchen.logger = Kitchen.default_file_logger
+  Kitchen::Config.new.instances.get_all(/4171F/).each do |instance|
     instance.test(:always)
   end
 end

@@ -36,7 +36,7 @@
 #     trunk_groups %w(mlag_ctl test)
 #   end
 
-property :vlan, Fixnum, name_property: true
+property :vlan, Integer, name_property: true
 property :vlan_name, String
 property :switch_name, String, desired_state: false
 property :enable, kind_of: [TrueClass, FalseClass], default: true
