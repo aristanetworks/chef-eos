@@ -2,7 +2,7 @@
 
 /**
  * Jenkinsfile for Chef cookbook for EOS
- * from https://github.com/aristanetworks/chef-arista/edit/develop/Jenkinsfile
+ * from https://github.com/aristanetworks/chef-eos/edit/develop/Jenkinsfile
  */
 
 node('vagrant') {
