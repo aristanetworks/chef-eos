@@ -8,5 +8,5 @@ description 'Manage Arista EOS device running-config'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 source_url 'https://github.com/aristanetworks/chef-eos'
 issues_url 'https://github.com/aristanetworks/chef-eos/issues'
-supports 'AristaEOS', '>= 4.15.0'
+supports 'arista_eos', '>= 4.15.0'
 depends 'ohai', '~> 4.0.0'
