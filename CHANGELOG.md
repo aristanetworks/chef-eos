@@ -1,7 +1,14 @@
 # Change Log
 
-## [1.0](https://github.com/aristanetworks/chef-eos/tree/1.0) (2016-10-10)
-[Full Changelog](https://github.com/aristanetworks/chef-eos/compare/0.1.4...1.0)
+## [1.0.1](https://github.com/aristanetworks/chef-eos/tree/1.0.1) (2016-10-10)
+[Full Changelog](https://github.com/aristanetworks/chef-eos/compare/v1.0...1.0.1)
+
+**Merged pull requests:**
+
+- Update metadata and CHANGELOG [\#5](https://github.com/aristanetworks/chef-eos/pull/5) ([jerearista](https://github.com/jerearista))
+
+## [v1.0](https://github.com/aristanetworks/chef-eos/tree/v1.0) (2016-10-10)
+[Full Changelog](https://github.com/aristanetworks/chef-eos/compare/0.1.4...v1.0)
 
 **Implemented enhancements:**
 
