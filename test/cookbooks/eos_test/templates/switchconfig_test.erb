@@ -1,0 +1,42 @@
+!
+event-handler dhclient
+   trigger on-boot
+   action bash sudo /mnt/flash/initialize_ma1.sh
+!
+transceiver qsfp default-mode 4x10G
+!
+ip name-server vrf default <%= @nameservers.each{|ns|}.join(' ') %>
+!
+spanning-tree mode mstp
+!
+aaa authorization exec default local
+!
+aaa root secret 5 $1$kJoSHuJm$TFgwpIkLdAgGm/Ve4MaDu.
+!
+username admin privilege 15 role network-admin secret 5 $1$zadebI3e$j.TmSB.xnIblL3ekQG8vJ/
+username vagrant privilege 15 role network-admin secret 5 $1$x7IKkFIE$GI5r4DQcD1yEkAMiSfLi80
+!
+<% @l2ports.each do |intf, settings| %>
+interface <%= intf %>
+   description configured by Chef
+!
+<% end %>
+interface Management1
+   ip address 10.0.2.15/24
+!
+<% @static_routes.each do |dest, gw| %>
+ip route <%= dest %> <%= gw %>
+<% end %>
+!
+no ip routing
+!
+banner motd
+Configured by Chef switchconfig_template
+EOF
+!
+management api http-commands
+   protocol unix-socket
+   no shutdown
+!
+!
+end

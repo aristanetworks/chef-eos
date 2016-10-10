@@ -1,0 +1,6 @@
+name 'eos_test'
+license 'all_rights'
+description 'Test recipes for eos custom resources'
+long_description 'Test recipes for eos custom resources'
+version '0.1.0'
+depends 'eos'

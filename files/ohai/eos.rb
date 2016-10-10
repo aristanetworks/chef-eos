@@ -26,62 +26,41 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ############################################################################
-
-# Cookbook Name:: eos
-# Recipe:: default
 #
-# Copyright (c) 2016 Arista Networks, All Rights Reserved.
-
-directory '/persist/sys/chef' do
-  recursive true
-  owner 'root'
-  group 'root'
-  mode '0755'
-  action :create
+# Settings that require eAPI are in a separate file from the base platform
+# match so that the platform/os will still get set even if rbeapi is missing.
+#
+require 'ohai/mixin/os'
+begin
+  require 'rbeapi'
+rescue LoadError
+  msg = 'Unable to load rbeapi rubygem'
+  Ohai::Log.debug msg
+  false
 end
 
-link '/etc/chef' do
-  to '/persist/sys/chef'
-end
+Ohai.plugin(:Eos) do
+  provides 'os_version', 'eos_version', 'eos_internal_version', 'serial_number',
+           'model', 'system_mac'
 
-execute 'Enable eAPI' do
-  command <<-EOF
-    /usr/bin/FastCli -p 15 -c 'enable
-    configure
-    management api http-commands
-    protocol unix-socket
-    no shutdown
-    end'
-  EOF
-  not_if '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
-end
+  # /etc/Eos-release:
+  # "Arista Networks EOS 4.14.6M"
 
-chef_gem 'rbeapi' do
-  compile_time true
-  version '>= 1.0'
-end
+  collect_data do
+    if File.exist?('/etc/Eos-release')
+      Rbeapi::Client.load_config(ENV['RBEAPI_CONF']) if ENV['RBEAPI_CONF']
+      connection_name = ENV['RBEAPI_CONNECTION'] || 'localhost'
+      switch = Rbeapi::Client.connect_to(connection_name)
+      response = switch.enable('show version')
+      version = response[0][:result]
 
-# Must require rbeapi here after we install the chef_gem because the
-# require in the resources will have already failed.
-# According to chef_gem docs, this shouldn't be necessary.
-require 'rbeapi'
-require 'rbeapi/switchconfig'
-
-execute 'Ensure eAPI socket created' do
-  command 'test -S /var/run/command-api.sock'
-  retries 5
-  retry_delay 1
-  not_if 'test -S /var/run/command-api.sock'
-end
-
-ohai_plugin 'eos' do
-  source_file 'ohai/eos.rb'
-end
-
-ohai_plugin 'eos_hostname' do
-  source_file 'ohai/eos_hostname.rb'
-end
-
-ohai_plugin 'eos_lldp_neighbors' do
-  source_file 'ohai/eos_lldp_neighbors.rb'
+      os_version version['version']
+      platform_version version['version']
+      eos_version version['version']
+      eos_internal_version version['internalVersion']
+      serial_number version['serialNumber']
+      model version['modelName']
+      system_mac version['systemMacAddress']
+    end
+  end
 end

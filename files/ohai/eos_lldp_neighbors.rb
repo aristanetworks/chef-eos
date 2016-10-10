@@ -27,61 +27,30 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ############################################################################
 
-# Cookbook Name:: eos
-# Recipe:: default
-#
-# Copyright (c) 2016 Arista Networks, All Rights Reserved.
-
-directory '/persist/sys/chef' do
-  recursive true
-  owner 'root'
-  group 'root'
-  mode '0755'
-  action :create
+begin
+  require 'rbeapi'
+rescue LoadError
+  msg = 'Unable to load rbeapi rubygem'
+  Ohai::Log.debug msg
+  false
 end
 
-link '/etc/chef' do
-  to '/persist/sys/chef'
-end
+Ohai.plugin(:LldpNeighbors) do
+  provides 'lldp_neighbors'
 
-execute 'Enable eAPI' do
-  command <<-EOF
-    /usr/bin/FastCli -p 15 -c 'enable
-    configure
-    management api http-commands
-    protocol unix-socket
-    no shutdown
-    end'
-  EOF
-  not_if '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
-end
+  collect_data(:arista_eos) do
+    Rbeapi::Client.load_config(ENV['RBEAPI_CONF']) if ENV['RBEAPI_CONF']
+    connection_name = ENV['RBEAPI_CONNECTION'] || 'localhost'
+    switch = Rbeapi::Client.connect_to(connection_name)
 
-chef_gem 'rbeapi' do
-  compile_time true
-  version '>= 1.0'
-end
+    neighbors = switch.enable('show lldp neighbors')
 
-# Must require rbeapi here after we install the chef_gem because the
-# require in the resources will have already failed.
-# According to chef_gem docs, this shouldn't be necessary.
-require 'rbeapi'
-require 'rbeapi/switchconfig'
+    if neighbors[0][:encoding] == 'json'
+      newhash = Hash.new { |hash, key| hash[key] = [] }
+      neighbors[0][:result][:lldpNeighbors].each { |n| newhash[n[:port]] << n }
 
-execute 'Ensure eAPI socket created' do
-  command 'test -S /var/run/command-api.sock'
-  retries 5
-  retry_delay 1
-  not_if 'test -S /var/run/command-api.sock'
-end
-
-ohai_plugin 'eos' do
-  source_file 'ohai/eos.rb'
-end
-
-ohai_plugin 'eos_hostname' do
-  source_file 'ohai/eos_hostname.rb'
-end
-
-ohai_plugin 'eos_lldp_neighbors' do
-  source_file 'ohai/eos_lldp_neighbors.rb'
+      # Return the hash as lldp_neighbors
+      lldp_neighbors newhash
+    end
+  end
 end

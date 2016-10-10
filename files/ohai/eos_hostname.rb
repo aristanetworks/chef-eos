@@ -27,61 +27,19 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # ############################################################################
 
-# Cookbook Name:: eos
-# Recipe:: default
-#
-# Copyright (c) 2016 Arista Networks, All Rights Reserved.
+Ohai.plugin(:Hostname) do
+  provides 'domain', 'hostname', 'fqdn', 'machinename'
 
-directory '/persist/sys/chef' do
-  recursive true
-  owner 'root'
-  group 'root'
-  mode '0755'
-  action :create
-end
+  collect_data(:arista_eos) do
+    so = shell_out("FastCli -c 'show hostname'")
+    so = so.stdout.split($INPUT_RECORD_SEPARATOR)[0]
 
-link '/etc/chef' do
-  to '/persist/sys/chef'
-end
+    # Hostname: veos01
+    # FQDN:     veos01.ztps-test.com
 
-execute 'Enable eAPI' do
-  command <<-EOF
-    /usr/bin/FastCli -p 15 -c 'enable
-    configure
-    management api http-commands
-    protocol unix-socket
-    no shutdown
-    end'
-  EOF
-  not_if '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
-end
-
-chef_gem 'rbeapi' do
-  compile_time true
-  version '>= 1.0'
-end
-
-# Must require rbeapi here after we install the chef_gem because the
-# require in the resources will have already failed.
-# According to chef_gem docs, this shouldn't be necessary.
-require 'rbeapi'
-require 'rbeapi/switchconfig'
-
-execute 'Ensure eAPI socket created' do
-  command 'test -S /var/run/command-api.sock'
-  retries 5
-  retry_delay 1
-  not_if 'test -S /var/run/command-api.sock'
-end
-
-ohai_plugin 'eos' do
-  source_file 'ohai/eos.rb'
-end
-
-ohai_plugin 'eos_hostname' do
-  source_file 'ohai/eos_hostname.rb'
-end
-
-ohai_plugin 'eos_lldp_neighbors' do
-  source_file 'ohai/eos_lldp_neighbors.rb'
+    hostname so.match(/Hostname:\s+(\w+)/)[1]
+    machinename so.match(/Hostname:\s+(\w+)/)[1]
+    fqdn so[1].match(/FQDN:\s+(\w+)/)[1]
+    domain so[1].match(/FQDN:\s+(.*?\.)(.*)$/)[2]
+  end
 end
