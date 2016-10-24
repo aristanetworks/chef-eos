@@ -1,5 +1,7 @@
 # eos Cookbook for Arista EOS
 
+[![Build Status](https://jenkins-01.eastus.cloudapp.azure.com/job/arista-eos-cookbook/badge/icon)](https://jenkins-01.eastus.cloudapp.azure.com/job/arista-eos-cookbook/)
+
 The eos cookbook simplifies management of [Arista](https://www.arista.com/) EOS
 network devices.  Arista EOS uses the standard el6 32-bit Chef client.  By
 including the eos::default recipe in your runlist, it will perform the
