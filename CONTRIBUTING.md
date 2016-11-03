@@ -1,8 +1,10 @@
 # Contributing to the eos Cookbook
 
-Community contributions to this cookbook are welcome.   Please ensure all Pull Requests include appropriate tests.
+Community contributions to this cookbook are welcome. Please ensure all Pull
+Requests include appropriate tests and documentation updates.
 
 # Contents
+
 1. [Development environment](#development-environment)
 2. [Testing](#testing)
 3. [Authors & Support](#authors--support)
@@ -12,6 +14,7 @@ Community contributions to this cookbook are welcome.   Please ensure all Pull R
 
 - Download and install the [ChefDK](https://downloads.chef.io/chef-dk/)
 - `eval "$(chef shell-init bash)"`
+- `gem install rbeapi`
 - `git clone ...`
 - `cd chef-eos`
 
@@ -37,6 +40,7 @@ changes.
 - `rake unit`
 
 ## System tests - TestKitchen
+
   TestKitchen requires Vagrant and VirtualBox.
 
 - Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> `vEOS-lab-<version>-virtualbox.box`
