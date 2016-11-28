@@ -181,7 +181,7 @@ For more examples, see the [test recipes](test/cookbooks/eos_test/recipes).
 # Contributing
 
 Community contributions are welcome.  Please ensure all pull-requests include
-spec tests. See [CONTRIBUTING](CONTRIBUTING.md) for more detail.
+spec tests. See [contributing](CONTRIBUTING.md) and [testing](TESTING.md) for more detail.
 
 # Authors & Support
 
