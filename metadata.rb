@@ -1,5 +1,5 @@
 name 'eos'
-version '1.0.2'
+version '1.0.3'
 chef_version '>= 12'
 maintainer 'Arista EOS+ Consulting Services'
 maintainer_email 'eosplus-dev@arista.com'
