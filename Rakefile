@@ -2,6 +2,7 @@ require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 require 'foodcritic'
 require 'kitchen'
+require 'stove/rake_task'
 
 # Style tests. Rubocop and Foodcritic
 namespace :style do
@@ -39,6 +40,8 @@ task :integration_latest do
     instance.test(:always)
   end
 end
+
+Stove::RakeTask.new
 
 # Default
 task default: %w(style unit)
