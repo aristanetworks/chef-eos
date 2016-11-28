@@ -1,7 +1,14 @@
 # Change Log
 
-## [1.0.2](https://github.com/aristanetworks/chef-eos/tree/1.0.2) (2016-11-03)
-[Full Changelog](https://github.com/aristanetworks/chef-eos/compare/v1.0.1...1.0.2)
+## [1.0.3](https://github.com/aristanetworks/chef-eos/tree/1.0.3) (2016-11-28)
+[Full Changelog](https://github.com/aristanetworks/chef-eos/compare/v1.0.2...1.0.3)
+
+**Merged pull requests:**
+
+- Breakout testing information to TESTING.md [\#9](https://github.com/aristanetworks/chef-eos/pull/9) ([jerearista](https://github.com/jerearista))
+
+## [v1.0.2](https://github.com/aristanetworks/chef-eos/tree/v1.0.2) (2016-11-03)
+[Full Changelog](https://github.com/aristanetworks/chef-eos/compare/v1.0.1...v1.0.2)
 
 **Merged pull requests:**
 
