@@ -41,6 +41,6 @@ task :integration_latest do
 end
 
 # Default
-task default: %w(style unit)
+task default: %w[style unit]
 
-task full: %w(style unit integration)
+task full: %w[style unit integration]
