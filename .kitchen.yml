@@ -19,11 +19,23 @@ platforms:
     driver:
       vagrantfiles:
         - vagrantfiles/veos.rb
-  - name: vEOS-4.16.7M
+  - name: vEOS-4.17.1F
     driver:
       vagrantfiles:
         - vagrantfiles/veos.rb
   - name: vEOS-lab-4.18.7M
+    driver:
+      vagrantfiles:
+        - vagrantfiles/veos.rb
+  - name: vEOS-lab-4.18.7M
+    driver:
+      vagrantfiles:
+        - vagrantfiles/veos.rb
+  - name: vEOS-lab-4.19.6.3M
+    driver:
+      vagrantfiles:
+        - vagrantfiles/veos.rb
+  - name: vEOS-lab-4.20.5.2F
     driver:
       vagrantfiles:
         - vagrantfiles/veos.rb

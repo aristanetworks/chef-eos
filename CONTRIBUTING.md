@@ -64,10 +64,6 @@ changes.
     veos-vEOS-4167M  Vagrant  ChefZero     Busser    Ssh        <Not Created>
     ```
 
-- Until omnitruck install.sh gets updated to recognize Arista EOS, the vagrantfiles/veos.rb will download and install the latest chef-client to EOS.TestKitchen normally handles this using https://omnitruck.chef.io/install.sh.
-  NOTE: This is a temporary workaround until the following 2 PRs get released:
-    - https://github.com/chef/mixlib-install/pull/127
-    - https://github.com/chef/omnitruck/pull/192
 - Run TestKitchen
   - `kitchen create [4167M]`
   - Optional for debugging: `kitchen login [4167M]`
