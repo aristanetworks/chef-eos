@@ -21,7 +21,7 @@ require 'chefspec'
 require 'chefspec/berkshelf'
 
 # load all library files for easy mocking
-libs = File.expand_path('../../libraries', __FILE__)
+libs = File.expand_path('../libraries', __dir__)
 $LOAD_PATH.unshift(libs) unless $LOAD_PATH.include?(libs)
 Dir[File.join(libs, '*.rb')].each do |lib|
   require File.basename(lib, '.rb')
