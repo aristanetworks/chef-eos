@@ -1,36 +1,23 @@
-# Contributing to the eos Cookbook
+# Testing the eos Cookbook
 
 Community contributions to this cookbook are welcome. Please ensure all Pull
 Requests include appropriate tests and documentation updates.
 
 # Contents
 
-1. [Development environment](#development-environment)
+1. [Testing](#testing)
 2. [Authors & Support](#authors--support)
 3. [License](#license)
-
-# Development Environment
-
-- Download and install the [ChefDK](https://downloads.chef.io/chef-dk/)
-- `eval "$(chef shell-init bash)"`
-- `gem install rbeapi`
-- `git clone ...`
-- `cd chef-eos`
-
-See [testing](TESTING.md) for details of testing changes.
-
-## Guard
-
-In a separate window, you can run Guard to analyze file changes on-write.
-
-- `cd <path/to>/chef-eos`
-- `chef gem install guard-foodcritic`
-- `chef exec guard`
 
 # Testing
 
 Verify your environment by running the unit and kitchen tests before making
-changes.
+changes.  Then ensure appropriates tests are added and passing before
+submitting a pull request.
+
+System tests requireVirtualBox, Vagrant, and Arista vEOS-lab VM downloaded to
+your system.  See the [system tests](#system-tests---testkitchen) section for
+more information.
 
 ## Style checks
 
@@ -41,7 +28,9 @@ changes.
 - `rake unit`
 
 ## System tests - TestKitchen
-  TestKitchen requires Vagrant and VirtualBox.
+
+  TestKitchen requires Vagrant and VirtualBox.  In the commands, below, adapt
+  the vEOS version strings as necessary.
 
 - Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> `vEOS-lab-<version>-virtualbox.box`
 - Add the box to your local inventory
@@ -68,6 +57,10 @@ changes.
     veos-vEOS-4167M  Vagrant  ChefZero     Busser    Ssh        <Not Created>
     ```
 
+- Until omnitruck install.sh gets updated to recognize Arista EOS, the vagrantfiles/veos.rb will download and install the latest chef-client to EOS.TestKitchen normally handles this using https://omnitruck.chef.io/install.sh.
+  NOTE: This is a temporary workaround until the following 2 PRs get released:
+    - https://github.com/chef/mixlib-install/pull/127
+    - https://github.com/chef/omnitruck/pull/192
 - Run TestKitchen
   - `kitchen create [4167M]`
   - Optional for debugging: `kitchen login [4167M]`
