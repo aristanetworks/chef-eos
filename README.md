@@ -17,7 +17,7 @@ following actions needed on EOS:
 This cookbook is designed and tested with Chef 12 and EOS 4.15, 4.16, and 4.17.
 Other versions are likely to work but may not be fully tested.
 
-  - Arista EOS 4.15 or greater
+  - Tested on Arista EOS 4.17 and 4.19
   - Chef client 32-bit RPM for RedHat/CentOS/el
   - Arista Ruby client for eAPI (rbeapi) rubygem and dependencies:
     - rbeapi 1.0 or greater which requires:
@@ -38,13 +38,13 @@ additional packages, and a base config, automatically.
 - Copy the rpm to the switch.
 
     ```
-    Arista#copy http://my_server/path/chef-12.6.0-1.el6.i386.rpm extension:
+    Arista#copy http://my_server/path/chef-<version>-1.el6.i386.rpm extension:
     ```
 
 - Install the RPM:
 
     ```
-    Arista#extension chef-12.6.0-1.el6.i386.rpm
+    Arista#extension chef-<version>-1.el6.i386.rpm
     ```
 
 - Configure EOS to install the chef-client automatically after reloads

@@ -35,12 +35,12 @@ end
 desc 'Run Test Kitchen on latest vEOS'
 task :integration_latest do
   Kitchen.logger = Kitchen.default_file_logger
-  Kitchen::Config.new.instances.get_all(/4171F/).each do |instance|
+  Kitchen::Config.new.instances.get_all(/417/).each do |instance|
     instance.test(:always)
   end
 end
 
 # Default
-task default: %w(style unit)
+task default: %w[style unit]
 
-task full: %w(style unit integration)
+task full: %w[style unit integration]

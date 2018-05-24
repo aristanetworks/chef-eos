@@ -40,6 +40,7 @@ node('vagrant') {
 
             sh """
                 eval "\$(chef shell-init bash)"
+                gem install rbeapi
                 echo '--format RspecJunitFormatter' > .rspec
                 echo '--out result.xml' >> .rspec
                 rake unit

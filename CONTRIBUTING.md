@@ -27,6 +27,54 @@ In a separate window, you can run Guard to analyze file changes on-write.
 - `chef gem install guard-foodcritic`
 - `chef exec guard`
 
+# Testing
+
+Verify your environment by running the unit and kitchen tests before making
+changes.
+
+## Style checks
+
+- `rake style`
+
+## Unit tests
+
+- `rake unit`
+
+## System tests - TestKitchen
+  TestKitchen requires Vagrant and VirtualBox.
+
+- Download Vagrant VirtualBox image of vEOS from [Arista Software Download](https://www.arista.com/en/support/software-download) (Free login required).  Navigate to vEOS --> `vEOS-lab-<version>-virtualbox.box`
+- Add the box to your local inventory
+
+    ```
+    vagrant box add --name vEOS-4.16.7M ~/Downloads/vEOS_4.16.7M_virtualbox.box
+    ```
+
+- Add the vEOS version to .kitchen.yml
+
+    ```
+    platforms:
+      - name: vEOS-4.16.7M
+        driver:
+          vagrantfiles:
+            - vagrantfiles/veos.rb
+    ```
+
+- Verify TestKitchen config
+
+    ```
+    $ kitchen list
+    Instance         Driver   Provisioner  Verifier  Transport  Last Action
+    veos-vEOS-4167M  Vagrant  ChefZero     Busser    Ssh        <Not Created>
+    ```
+
+- Run TestKitchen
+  - `kitchen create [4167M]`
+  - Optional for debugging: `kitchen login [4167M]`
+  - `kitchen converge [4167M]`
+  - `kitchen verify [4167M]`
+  - `kitchen destroy [4167M]`
+
 # Authors & Support
 
 For support, please open a GitHub issue.  This module is maintained by Arista
