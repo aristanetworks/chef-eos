@@ -72,7 +72,7 @@ load_current_value do
 
   vlan_name vlans[vlan][:name]
   state = vlans[vlan][:state]
-  enable state == 'active' ? true : false
+  enable state == 'active'
   trunk_groups vlans[vlan][:trunk_groups]
 end
 

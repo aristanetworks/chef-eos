@@ -45,14 +45,14 @@ link '/etc/chef' do
 end
 
 execute 'Enable eAPI' do
-  command <<-EOF
+  command <<-CONFIG
     /usr/bin/FastCli -p 15 -c 'enable
     configure
     management api http-commands
     protocol unix-socket
     no shutdown
     end'
-  EOF
+  CONFIG
   not_if '/usr/bin/FastCli -p 15 -c "show running-config" | grep unix-socket'
 end
 

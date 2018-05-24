@@ -1,20 +1,23 @@
 # eos Cookbook for Arista EOS
 
+[![Build Status](https://jenkins-01.eastus.cloudapp.azure.com/job/arista-eos-cookbook/badge/icon)](https://jenkins-01.eastus.cloudapp.azure.com/job/arista-eos-cookbook/)
+
 The eos cookbook simplifies management of [Arista](https://www.arista.com/) EOS
 network devices.  Arista EOS uses the standard el6 32-bit Chef client.  By
-including the eos::default recipe in your runlist, it will perform the
+including the eos::default recipe in the runlist, it will perform the
 following actions needed on EOS:
-- Relocate /etc/chef to /persist/sys/chef with a symlink back to /etc/chef
+- Relocate /etc/chef to /persist/sys/chef with a symlink back to /etc/chef.
+  This ensures local configuration and state will be retained after a reload.
 - Enable eAPI (‘management api http-commands’) with unix-sockets as the
   transport in the running-config
-- Add/enhances several ohai plugins
+- Add/enhance several ohai plugins
 
 # Requirements
 
-This cookbook is designed and tested with Chef 12 and EOS 4.15 and 4.16. Other
-versions are likely to work but are not fully tested at this time.
+This cookbook is designed and tested with Chef 12 and EOS 4.15, 4.16, and 4.17.
+Other versions are likely to work but may not be fully tested.
 
-  - Arista EOS 4.15 or greater
+  - Tested on Arista EOS 4.17 and 4.19
   - Chef client 32-bit RPM for RedHat/CentOS/el
   - Arista Ruby client for eAPI (rbeapi) rubygem and dependencies:
     - rbeapi 1.0 or greater which requires:
@@ -24,9 +27,9 @@ versions are likely to work but are not fully tested at this time.
 
 # Installing
 
-Installing Chef on an Arista switch requires the steps below. While the
+Installing Chef on an Arista switch requires the following steps. While the
 manual steps are displayed, below, for reference, it is suggested to use a tool
-such as Arista’s CloudVision or ZTP Server to take advantage of the zero-touch
+such as Arista CloudVision or ZTP Server to take advantage of the zero-touch
 provisioning capability of Arista devices to load a desired EOS version,
 additional packages, and a base config, automatically.
 
@@ -35,22 +38,22 @@ additional packages, and a base config, automatically.
 - Copy the rpm to the switch.
 
     ```
-    Arista#copy http://my_server/path/chef-12.6.0-1.el6.i386.rpm extension:
+    Arista#copy http://my_server/path/chef-<version>-1.el6.i386.rpm extension:
     ```
 
 - Install the RPM:
 
     ```
-    Arista#extension chef-12.6.0-1.el6.i386.rpm
+    Arista#extension chef-<version>-1.el6.i386.rpm
     ```
 
-- Configure EOS to install the chef-client after a reload
+- Configure EOS to install the chef-client automatically after reloads
 
     ```
     Arista#copy installed-extensions boot-extensions
     ```
 
-- Ensure `recipe[‘eos’]` is in the default runlist for any EOS devices
+- Ensure `recipe[‘eos’]` is in the default runlist for EOS devices
 
 ## Installing behind a firewall
 
@@ -59,8 +62,34 @@ necessary rubygems.  When installing on devices without access to the Internet,
 additional steps are required.  These, too, should be automated whenever
 possible.
 
-One solution is to download the rubygem binaries to the Chef server, then use a
-recipe to install those on devices.  Example:
+Two common solutions are to bootstrap the device with an rbeapi extension or let chef_gem manage the rubygems, directly.
+
+### Install rbeapi as an EOS extension
+
+- [Download the rbeapi extension](https://github.com/arista-eosplus/rbeapi/releases)
+  named `rbeapi-chef-<version>.swix`
+- Copy the extension to the switch.
+
+    ```
+    Arista#copy http://my_server/path/rbeapi-chef-1.0-1.swix extension:
+    ```
+
+- Install the extension:
+
+    ```
+    Arista#extension rbeapi-chef-1.0-1.swix
+    ```
+
+- Configure EOS to install rbeapi automatically after reloads
+
+    ```
+    Arista#copy installed-extensions boot-extensions
+    ```
+
+### Install rbeapi with chef_gem
+
+Download the rubygem binaries to be included in the cookbook, then use a recipe
+to install those on devices.  Example:
 
 Download the rubygem binaries:
 
@@ -132,12 +161,27 @@ eos_switchconfig 'running-config' do
 end
 ```
 
+## eos_vlan
+
+```ruby
+eos_vlan '1' do
+  vlan_name 'default'
+  enable false
+end
+
+eos_vlan '100' do
+  vlan_name 'Test_vlan'
+  enable true
+  trunk_groups %w(mlag_ctl test)
+end
+```
+
 For more examples, see the [test recipes](test/cookbooks/eos_test/recipes).
 
 # Contributing
 
 Community contributions are welcome.  Please ensure all pull-requests include
-spec tests. See [CONTRIBUTING](CONTRIBUTING.md) for more detail.
+spec tests. See [contributing](CONTRIBUTING.md) and [testing](TESTING.md) for more detail.
 
 # Authors & Support
 
